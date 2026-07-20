@@ -1,0 +1,6 @@
+{
+  "name": "ShiftPass",
+  "description": "Sistema inteligente, rápido e seguro para passagem de plantão hospitalar, otimizado para profissionais de enfermagem.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

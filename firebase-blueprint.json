@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "patient": {
+      "title": "Patient",
+      "description": "Patient record in the ShiftPass system.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique patient identifier." },
+        "name": { "type": "string", "description": "Full name of the patient." },
+        "bed": { "type": "string", "description": "Bed identification code (e.g. E1)." },
+        "chartNumber": { "type": "string", "description": "Hospital medical record number." },
+        "age": { "type": "integer", "description": "Patient's age." },
+        "sex": { "type": "string", "description": "Gender of the patient." },
+        "diagnosis": { "type": "string", "description": "Summarized medical diagnosis." },
+        "sector": { "type": "string", "description": "Hospital sector or ward." },
+        "responsibleNurse": { "type": "string", "description": "Name of the nurse currently in charge." },
+        "status": { "type": "string", "enum": ["green", "yellow", "red", "gray"], "description": "Color-coded priority status." },
+        "lastUpdated": { "type": "string", "format": "date-time", "description": "Timestamp of the last record update." },
+        "situation": { "type": "string", "description": "Detailed text describing current clinical state." },
+        "pendingList": { "type": "array", "description": "List of outstanding clinical/operational checklist items." },
+        "alerts": { "type": "array", "description": "List of active health alerts and risk tags." },
+        "observations": { "type": "string", "description": "Free-form clinical observations and general comments." },
+        "nextShiftSummary": { "type": "string", "maxLength": 300, "description": "Short, high-impact summary for the incoming shift." }
+      },
+      "required": ["id", "name", "bed", "chartNumber", "status"]
+    },
+    "history": {
+      "title": "History",
+      "description": "Chronological history log of handovers recorded for patients.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique history entry identifier." },
+        "patientId": { "type": "string", "description": "ID of the referenced patient." },
+        "timestamp": { "type": "string", "format": "date-time", "description": "Handover record date and time." },
+        "recordedBy": { "type": "string", "description": "Name or email of the nurse who registered this handover." },
+        "situation": { "type": "string", "description": "Clinical state recorded at the time of handover." },
+        "pendingList": { "type": "array", "description": "Checklist items state at the time of handover." },
+        "alerts": { "type": "array", "description": "Active alerts recorded at the time of handover." },
+        "observations": { "type": "string", "description": "Observations recorded at the time of handover." },
+        "nextShiftSummary": { "type": "string", "maxLength": 300, "description": "Incoming shift summary recorded." }
+      },
+      "required": ["id", "patientId", "timestamp", "recordedBy", "nextShiftSummary"]
+    }
+  },
+  "firestore": {
+    "/patients/{patientId}": {
+      "schema": "patient",
+      "description": "Collection of patient status records."
+    },
+    "/patients/{patientId}/history/{historyId}": {
+      "schema": "history",
+      "description": "Subcollection of historical handover logs for a specific patient."
+    }
+  }
+}

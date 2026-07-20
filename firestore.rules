@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper to check if a user is authenticated (relaxed for guest/demo access)
+    function isAuthenticated() {
+      return true;
+    }
+
+    // Helper to check standard ID size and contents
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // Patients collection
+    match /patients/{patientId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && isValidId(patientId);
+      allow delete: if isAuthenticated();
+
+      // Subcollection for handover history (immutable logs)
+      match /history/{historyId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated() && isValidId(historyId);
+        allow update, delete: if false; // Handover logs are immutable for safety
+      }
+    }
+  }
+}
